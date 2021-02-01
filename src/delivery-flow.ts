@@ -19,7 +19,7 @@ function getAuthToken(): string {
 
 export async function checkDeliveryFlowStatus(
   application: string,
-  flow: string,
+  flow: string
 ): Promise<void> {
   const res = await fetch(
     `${getBaseUrl()}/applications/${application}/delivery/${flow}/status`,
@@ -28,7 +28,7 @@ export async function checkDeliveryFlowStatus(
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Token ${getAuthToken()}`
-      },
+      }
     }
   )
   if (res.status !== 200) throw Error((await res.json())?.message)
