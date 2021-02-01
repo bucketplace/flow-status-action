@@ -36,6 +36,10 @@ function getAuthToken() {
         throw ReferenceError('There is no token defined in the environment variables');
     return token;
 }
+// eslint-disable-next-line @typescript-eslint/promise-function-async
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 function checkDeliveryFlowStatus(application, flow) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
@@ -44,9 +48,13 @@ function checkDeliveryFlowStatus(application, flow) {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Token ${getAuthToken()}`
-            },
+            }
         });
-        if (res.status !== 200)
+        if (res.status === 202) {
+            yield sleep(1000);
+            yield checkDeliveryFlowStatus(application, flow);
+        }
+        else if (res.status !== 200)
             throw Error((_a = (yield res.json())) === null || _a === void 0 ? void 0 : _a.message);
     });
 }

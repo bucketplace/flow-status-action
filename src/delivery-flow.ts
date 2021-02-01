@@ -17,6 +17,11 @@ function getAuthToken(): string {
   return token
 }
 
+// eslint-disable-next-line @typescript-eslint/promise-function-async
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 export async function checkDeliveryFlowStatus(
   application: string,
   flow: string
@@ -31,5 +36,8 @@ export async function checkDeliveryFlowStatus(
       }
     }
   )
-  if (res.status !== 200) throw Error((await res.json())?.message)
+  if (res.status === 202) {
+    await sleep(1000)
+    await checkDeliveryFlowStatus(application, flow)
+  } else if (res.status !== 200) throw Error((await res.json())?.message)
 }
